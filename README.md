@@ -1,53 +1,44 @@
-# pi-setup — ชุดปรับแต่ง Pi สำหรับ Antigravity / Google AI Pro
+# pi-antigravity-setup
 
-โฟลเดอร์งานนี้เก็บ source และเอกสารของทุกอย่างที่ติดตั้ง/เขียนขึ้นเพื่อใช้งาน
-[Pi coding agent](https://github.com/earendil-works/pi) ร่วมกับ Antigravity (Google AI Pro)
-ประกอบด้วย bottom bar แสดงโควตา, ตัววัด tok/s, ระบบติว `learn` ที่ดัดแปลงแล้ว,
-และเอกสารวินิจฉัยปัญหา 403 `VALIDATION_REQUIRED` ที่ใช้แก้จนระบบกลับมาใช้ได้
+Pi extensions and diagnostics for [Pi coding agent](https://github.com/earendil-works/pi) + Antigravity (Google AI Pro).
 
-## สิ่งที่อยู่ในโฟลเดอร์นี้
-
-| พาธ | คำอธิบาย | ติดตั้งไปที่ |
-|---|---|---|
-| `extensions/antigravity-usage-bar.ts` | Bottom bar ใต้ editor แสดงโควตา Antigravity ทุก pool (Gemini / Claude+GPT × 5h / weekly) + เวลา reset | `~/.pi/agent/extensions/antigravity-usage-bar.ts` |
-| `extensions/tok-per-sec.ts` | แสดง tok/s บนบรรทัด working (แถว spinner เหนือช่องพิมพ์) แบบสด + ค่าจริงตอนจบคำตอบ | `~/.pi/agent/extensions/tok-per-sec.ts` |
-| `agents/*.md` | subagent (svg-maker / mermaid-maker) — โน้ต: `subagentOnlyExtensions` เป็น path เฉพาะเครื่องนี้ ชี้ไปที่ `visual-tools` ของ repo `learn` ให้แก้ให้ตรงเครื่องก่อนใช้ | `~/.pi/agent/agents/` |
-| `scripts/diagnose-antigravity.mjs` | วินิจฉัยสถานะบัญชี Antigravity (tier/quota/403) แบบ raw — ใช้ตอน debug ปัญหา VALIDATION_REQUIRED | รันตรง ๆ ได้เลย |
-| `docs/troubleshooting-antigravity-403.md` | เคสไฟล์ปัญหา 403 `Verify your account to continue.` + วิธีแก้ที่ใช้ได้จริง | — |
-| `docs/learn-adaptation.md` | แผนที่การดัดแปลง repo `learn` (amosblomqvist/learn) ให้ใช้กับ pi 0.87 | — |
-| `docs/todo.md` | งานค้าง: benchmark ประสิทธิภาพ + ระบบ fallback | — |
-
-> ⚠️ `scripts/diagnose-antigravity.mjs` หา path ของ pi เองอัตโนมัติ (Homebrew / npm global) แต่ `agents/*.md` ยังมี absolute path ที่ต้องแก้เอง
-
-## ติดตั้ง / deploy
-
-ไฟล์ต้นฉบับในโฟลเดอร์นี้คือ source of truth — คัดลอกทับไฟล์ปลายทางเมื่อแก้ไข:
+## Install
 
 ```bash
-cp extensions/antigravity-usage-bar.ts ~/.pi/agent/extensions/
-cp extensions/tok-per-sec.ts ~/.pi/agent/extensions/
-cp agents/*.md ~/.pi/agent/agents/
-# จากนั้น /reload ใน pi หรือเปิด pi ใหม่
+pi install npm:pi-antigravity
+/login antigravity
+
+git clone https://github.com/dokdik0019-wq/pi-antigravity-setup
+cp pi-antigravity-setup/extensions/*.ts ~/.pi/agent/extensions/
+cp pi-antigravity-setup/agents/*.md ~/.pi/agent/agents/
 ```
 
-> ไฟล์ที่ deploy แล้วจะถูกโหลดโดย pi (jiti) ทันที — ไม่ต้อง build
+Reload Pi (or restart). No build step.
 
-## คำสั่งที่มี
+## Commands
 
-| คำสั่ง | ผล |
+| Command | Effect |
 |---|---|
-| `/agbar` | เปิด/ปิด bottom bar โควตา |
-| `/agbar refresh` | ดึงข้อมูลโควตาใหม่ทันที |
-| `/toks` | เปิด/ปิดตัววัด tok/s (คืนข้อความ working เดิมอัตโนมัติ) |
+| `/agbar` | Toggle the quota bottom bar |
+| `/agbar refresh` | Force-refresh quota data |
+| `/toks` | Toggle the tok/s meter |
 
-## ภาพรวมสถาปัตยกรรม
+## Contents
 
-- **antigravity-usage-bar**: เรียก `fetchAccountUsage` ของแพ็กเกจ `pi-antigravity` (ที่ติดตั้งเป็น pi package อยู่แล้ว) ผ่าน dynamic import จาก `~/.pi/agent/npm/node_modules/` — จึงรองรับ OAuth refresh / หลายบัญชีตามเดิม, refresh ทุก 2 นาที + เมื่อจบทุก turn
-- **tok-per-sec**: จับ `message_start` / `message_update` / `message_end` วัดความเร็ว generate จริง (first delta → end) และ ttft, แสดงผ่าน `ctx.ui.setWorkingMessage()`
-- **agents ทั้งสอง**: เป็น agent definition ของ [pi-subagents](https://github.com/earendil-works/pi-subagents) (ค้นพบจาก `~/.pi/agent/agents/`) โหลดเครื่องมือเฉพาะตัวผ่าน `subagentOnlyExtensions` ชี้ไปที่ `visual-tools` ของ repo learn
+| Path | Description |
+|---|---|
+| `extensions/antigravity-usage-bar.ts` | Bottom bar with Antigravity quota per pool (Gemini / Claude+GPT × 5h / weekly) and reset time |
+| `extensions/tok-per-sec.ts` | Live tok/s on the working line |
+| `agents/*.md` | `svg-maker` / `mermaid-maker` subagents for [pi-subagents](https://github.com/earendil-works/pi-subagents) |
+| `scripts/diagnose-antigravity.mjs` | Raw account diagnostics (tier / quota / 403) |
+| `docs/troubleshooting-antigravity-403.md` | Fix for the `VALIDATION_REQUIRED` 403 |
+| `docs/learn-adaptation.md` | Notes on adapting the `learn` repo |
+| `docs/todo.md` | Backlog |
 
-## ที่มา
+> `agents/*.md` contain machine-specific `subagentOnlyExtensions` paths — edit before use.
 
-- ระบบติว/visualize ดัดแปลงจาก [amosblomqvist/learn](https://github.com/amosblomqvist/learn) (MIT)
-- แรงบันดาลใจ extension จาก [amosblomqvist/pi-config](https://github.com/amosblomqvist/pi-config)
-- Provider: [pi-antigravity](https://github.com/Rahularya01/pi-antigravity) (ไม่เป็นทางการ, ไม่เกี่ยวข้องกับ Google)
+## Credits
+
+- Tutoring/visualize adapted from [amosblomqvist/learn](https://github.com/amosblomqvist/learn) (MIT)
+- Extension inspiration from [amosblomqvist/pi-config](https://github.com/amosblomqvist/pi-config)
+- Provider: [pi-antigravity](https://github.com/Rahularya01/pi-antigravity) (unofficial, not affiliated with Google)
