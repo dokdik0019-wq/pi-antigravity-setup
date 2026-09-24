@@ -11,12 +11,13 @@
 |---|---|---|
 | `extensions/antigravity-usage-bar.ts` | Bottom bar ใต้ editor แสดงโควตา Antigravity ทุก pool (Gemini / Claude+GPT × 5h / weekly) + เวลา reset | `~/.pi/agent/extensions/antigravity-usage-bar.ts` |
 | `extensions/tok-per-sec.ts` | แสดง tok/s บนบรรทัด working (แถว spinner เหนือช่องพิมพ์) แบบสด + ค่าจริงตอนจบคำตอบ | `~/.pi/agent/extensions/tok-per-sec.ts` |
-| `agents/svg-maker.md` | Subagent วาดภาพ SVG → PNG (rsvg-convert, fallback ImageMagick) | `~/.pi/agent/agents/svg-maker.md` |
-| `agents/mermaid-maker.md` | Subagent วาดแผนภาพ Mermaid → PNG (mermaid-cli + Chrome) | `~/.pi/agent/agents/mermaid-maker.md` |
+| `agents/*.md` | subagent (svg-maker / mermaid-maker) — โน้ต: `subagentOnlyExtensions` เป็น path เฉพาะเครื่องนี้ ชี้ไปที่ `visual-tools` ของ repo `learn` ให้แก้ให้ตรงเครื่องก่อนใช้ | `~/.pi/agent/agents/` |
 | `scripts/diagnose-antigravity.mjs` | วินิจฉัยสถานะบัญชี Antigravity (tier/quota/403) แบบ raw — ใช้ตอน debug ปัญหา VALIDATION_REQUIRED | รันตรง ๆ ได้เลย |
 | `docs/troubleshooting-antigravity-403.md` | เคสไฟล์ปัญหา 403 `Verify your account to continue.` + วิธีแก้ที่ใช้ได้จริง | — |
 | `docs/learn-adaptation.md` | แผนที่การดัดแปลง repo `learn` (amosblomqvist/learn) ให้ใช้กับ pi 0.87 | — |
 | `docs/todo.md` | งานค้าง: benchmark ประสิทธิภาพ + ระบบ fallback | — |
+
+> ⚠️ `scripts/diagnose-antigravity.mjs` หา path ของ pi เองอัตโนมัติ (Homebrew / npm global) แต่ `agents/*.md` ยังมี absolute path ที่ต้องแก้เอง
 
 ## ติดตั้ง / deploy
 

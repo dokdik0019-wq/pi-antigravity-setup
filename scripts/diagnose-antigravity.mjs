@@ -30,7 +30,32 @@ import path from "node:path";
 // Resolve pi-antigravity's internals from the Pi package store (same modules pi uses).
 const agentDir = process.env.PI_AGENT_DIR || path.join(os.homedir(), ".pi", "agent");
 const AG = path.join(agentDir, "npm", "node_modules", "pi-antigravity", "src");
-const PI = "/opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent";
+// Locate the pi-coding-agent install (varies by OS / install method).
+function findPiRoot() {
+  const hasIndex = (dir) => !!dir && fs.existsSync(path.join(dir, "dist", "index.js"));
+  const candidates = [
+    process.env.PI_HOME && path.join(process.env.PI_HOME, "lib", "node_modules", "@earendil-works", "pi-coding-agent"),
+    "/opt/homebrew/lib/node_modules/@earendil-works/pi-coding-agent",
+    "/usr/local/lib/node_modules/@earendil-works/pi-coding-agent",
+    process.env.APPDATA && path.join(process.env.APPDATA, "npm", "node_modules", "@earendil-works", "pi-coding-agent"),
+  ];
+  for (const dir of candidates) if (hasIndex(dir)) return dir;
+  // Resolve the real path of the `pi` binary and walk up to its package root.
+  try {
+    const { execSync } = createRequire(import.meta.url)("node:child_process");
+    const real = fs.realpathSync(execSync("command -v pi", { encoding: "utf8" }).trim());
+    let dir = path.dirname(real);
+    while (dir !== path.dirname(dir) && !fs.existsSync(path.join(dir, "package.json"))) dir = path.dirname(dir);
+    if (hasIndex(dir)) return dir;
+    // As a final fallback, ask npm where the global package lives.
+    for (const root of [`${path.dirname(dir)}`, execSync("npm root -g", { encoding: "utf8" }).trim()]) {
+      const d = path.join(root, "@earendil-works", "pi-coding-agent");
+      if (hasIndex(d)) return d;
+    }
+  } catch {}
+  throw new Error("Could not locate @earendil-works/pi-coding-agent — set PI_HOME or install pi globally.");
+}
+const PI = findPiRoot();
 const PI_NM = path.join(PI, "node_modules");
 const req = createRequire(path.join(PI, "dist", "index.js"));
 const jiti = createJiti(import.meta.url, {

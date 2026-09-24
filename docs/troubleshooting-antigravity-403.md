@@ -1,6 +1,6 @@
 # Troubleshooting: Antigravity 403 "Verify your account to continue." (`VALIDATION_REQUIRED`)
 
-**วันที่พบ:** 2026-09-24 · **บัญชี:** nalinsurasa@gmail.com (Google AI Pro / `g1-pro-tier`) · **ผลลัพธ์สุดท้าย:** แก้ได้แล้ว
+**วันที่พบ:** 2026-09-24 · **บัญชี:** บัญชี Google AI Pro (`g1-pro-tier`) · **ผลลัพธ์สุดท้าย:** แก้ได้แล้ว
 
 ## อาการ
 
