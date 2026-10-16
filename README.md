@@ -31,8 +31,10 @@ Reload Pi (or restart). No build step.
 | `extensions/tok-per-sec.ts` | Live tok/s on the working line |
 | `agents/*.md` | `svg-maker` / `mermaid-maker` subagents for [pi-subagents](https://github.com/earendil-works/pi-subagents) |
 | `scripts/diagnose-antigravity.mjs` | Raw account diagnostics (tier / quota / 403) |
+| `scripts/show-quota-groups.mjs` | Print the quota pools and windows Google returns, i.e. what each bottom-bar bar means |
 | `scripts/patch-gemini-4-argon.mjs` | Automated patch for pi-antigravity to enable Gemini 4 Argon |
 | `docs/gemini-4-argon-setup.md` | Guide on enabling Gemini 4 Argon and resolving the User-Agent gate |
+| `docs/quota-pools-and-bars.md` | What each usage-bar pool and window is (Gemini / Claude+GPT / Argon × 5h / weekly) |
 | `docs/troubleshooting-antigravity-403.md` | Fix for the `VALIDATION_REQUIRED` 403 |
 | `docs/learn-adaptation.md` | Notes on adapting the `learn` repo |
 | `docs/todo.md` | Backlog |
